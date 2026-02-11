@@ -10,6 +10,7 @@ namespace NotifyCrash
     {
         static void Main(string[] args)
         {
+            //Sửa nội dung file
         }
     }
 }
