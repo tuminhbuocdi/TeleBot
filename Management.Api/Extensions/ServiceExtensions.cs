@@ -11,6 +11,7 @@ public static class ServiceExtension
         services.AddSingleton<DbConnectionFactory>();
         services.AddScoped<UnitOfWork>();
         services.AddScoped<JwtService>();
+        services.AddSingleton<PasswordHasher>();
 
 
         services.AddScoped<UserRepository>();

@@ -13,10 +13,28 @@ namespace Management.Backend
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Services.AddCors(opt =>
+            {
+                opt.AddPolicy("frontend", p =>
+                {
+                    p.WithOrigins("http://localhost:5173", "https://localhost:5173")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials();
+                });
+            });
+
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddInfrastructure();
+
+            var jwtKey = builder.Configuration["Jwt:Key"];
+            if (string.IsNullOrWhiteSpace(jwtKey) || Encoding.UTF8.GetBytes(jwtKey).Length < 32)
+            {
+                throw new InvalidOperationException("Invalid configuration: Jwt:Key must be at least 32 bytes (256 bits) for HS256.");
+            }
+
             builder.Services.AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", opt =>
                 {
@@ -27,11 +45,13 @@ namespace Management.Backend
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
 
+                        ClockSkew = TimeSpan.Zero,
+
                         ValidIssuer = builder.Configuration["Jwt:Issuer"],
                         ValidAudience = builder.Configuration["Jwt:Audience"],
 
                         IssuerSigningKey = new SymmetricSecurityKey(
-                            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+                            Encoding.UTF8.GetBytes(jwtKey))
                     };
                 });
 
@@ -43,6 +63,8 @@ namespace Management.Backend
 
             app.UseSwagger();
             app.UseSwaggerUI();
+
+            app.UseCors("frontend");
 
             app.UseAuthentication();
             app.UseAuthorization();
