@@ -17,6 +17,8 @@ public sealed class BcGameHistoryPoller : BackgroundService
     private readonly ILogger<BcGameHistoryPoller> _logger;
     private readonly IConfiguration _configuration;
 
+    private int _successLogCount;
+
     public BcGameHistoryPoller(
         IHttpClientFactory httpClientFactory,
         IServiceScopeFactory scopeFactory,
@@ -42,7 +44,7 @@ public sealed class BcGameHistoryPoller : BackgroundService
                 _logger.LogError(ex, "Poll failed");
             }
 
-            int intervalSeconds = _configuration.GetValue<int?>("BcGame:IntervalSeconds") ?? 20;
+            int intervalSeconds = _configuration.GetValue<int?>("BcGame:IntervalSeconds") ?? 10;
             await Task.Delay(TimeSpan.FromSeconds(intervalSeconds), stoppingToken);
         }
     }
@@ -126,6 +128,20 @@ public sealed class BcGameHistoryPoller : BackgroundService
         }
 
         _logger.LogInformation("Synced CrashRecords: {Count}", inputs.Count);
+
+        _successLogCount++;
+        if (_successLogCount >= 10)
+        {
+            _successLogCount = 0;
+            try
+            {
+                Console.Clear();
+            }
+            catch
+            {
+                // ignore
+            }
+        }
     }
 
     private sealed class BcGameResponse
