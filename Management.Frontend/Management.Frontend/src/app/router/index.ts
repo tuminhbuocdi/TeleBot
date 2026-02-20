@@ -20,6 +20,23 @@ const routes = [
         component: () =>
           import("@/modules/dashboard/pages/DashboardPage.vue"),
       },
+      {
+        path: "crash-game/overview",
+        component: () =>
+          import("@/modules/crash-game/pages/CrashGameOverviewPage.vue"),
+      },
+      {
+        path: "telegram-posts",
+        component: () =>
+          import("@/modules/telegram-posts/pages/TelegramPostsPage.vue"),
+      },
+      {
+        path: "telegram-crawl-sources",
+        component: () =>
+          import(
+            "@/modules/telegram-crawl-sources/pages/TelegramCrawlSourcesPage.vue"
+          ),
+      },
     ],
   },
 ]

@@ -9,6 +9,8 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
+    <PackageReference Include="Telegram.Bot" Version="22.4.3" />
+    <PackageReference Include="WTelegramClient" Version="4.4.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -18,5 +20,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Management.Domain\Management.Domain.csproj" />
+    <ProjectReference Include="..\Management.Infrastructure\Management.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="ffmpeg\**\*" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

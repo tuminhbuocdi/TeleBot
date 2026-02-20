@@ -24,3 +24,9 @@ _ReSharper*/
 # OS
 Thumbs.db
 .DS_Store
+
+# Configuration files with sensitive data
+#**/appsettings.json
+#**/appsettings.*.json
+#!**/appsettings.example.json
+#!**/appsettings.template.json

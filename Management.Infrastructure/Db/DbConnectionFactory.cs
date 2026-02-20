@@ -13,8 +13,14 @@ public class DbConnectionFactory
         _config = config;
     }
 
-    public IDbConnection Create()
+    public IDbConnection Create(string connectionName = "Default")
     {
-        return new SqlConnection(_config.GetConnectionString("Default"));
+        var connStr = _config.GetConnectionString(connectionName);
+        if (string.IsNullOrWhiteSpace(connStr))
+        {
+            throw new InvalidOperationException($"Missing connection string: ConnectionStrings:{connectionName}");
+        }
+
+        return new SqlConnection(connStr);
     }
 }

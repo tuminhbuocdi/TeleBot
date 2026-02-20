@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>dotnet-Management.Worker-0242fb96-35f6-4be2-a98c-0514356196b0</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
+    <PackageReference Include="Telegram.Bot" Version="22.4.3" />
+    <PackageReference Include="WTelegramClient" Version="4.4.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ffmpeg\" />
+    <Folder Include="Services\" />
+    <Folder Include="Jobs\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Management.Domain\Management.Domain.csproj" />
+    <ProjectReference Include="..\Management.Infrastructure\Management.Infrastructure.csproj" />
+  </ItemGroup>
+</Project>

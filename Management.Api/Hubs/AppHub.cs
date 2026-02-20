@@ -8,5 +8,10 @@ namespace Management.Api.Hubs
         {
             await Clients.All.SendAsync("msg", msg);
         }
+
+        public async Task BroadcastCrashRecordsUpdated()
+        {
+            await Clients.All.SendAsync("crashRecordsUpdated");
+        }
     }
 }
