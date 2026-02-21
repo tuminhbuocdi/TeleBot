@@ -40,6 +40,34 @@ ORDER BY SortOrder ASC, CreatedAt ASC";
         return await conn.ExecuteScalarAsync<string?>(new CommandDefinition(sql, new { postId }, cancellationToken: cancellationToken));
     }
 
+    public async Task<string?> GetDemoVideoTelegramFileId(Guid postId, CancellationToken cancellationToken)
+    {
+        using var conn = CreateConnection();
+        const string sql = @"
+SELECT TOP 1 TelegramFileId
+FROM TelegramPostMedias
+WHERE PostId=@postId
+  AND IsActive=1
+  AND MediaType='video'
+  AND TelegramFileId IS NOT NULL
+ORDER BY SortOrder ASC, CreatedAt ASC";
+
+        return await conn.ExecuteScalarAsync<string?>(new CommandDefinition(sql, new { postId }, cancellationToken: cancellationToken));
+    }
+
+    public async Task<string?> GetPreferredVideoTelegramFileId(Guid postId, CancellationToken cancellationToken)
+    {
+        // Try to get demo video first
+        var demoFileId = await GetDemoVideoTelegramFileId(postId, cancellationToken);
+        if (!string.IsNullOrWhiteSpace(demoFileId))
+        {
+            return demoFileId;
+        }
+
+        // Fallback to full video if no demo available
+        return await GetFullVideoTelegramFileId(postId, cancellationToken);
+    }
+
     public async Task<Guid> InsertPostWithMedias(
         Guid? postId,
         long telegramChatId,

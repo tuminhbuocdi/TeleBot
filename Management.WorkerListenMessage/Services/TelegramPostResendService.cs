@@ -73,8 +73,8 @@ public sealed class TelegramPostResendService : ITelegramPostResendService
             _logger.LogInformation("Resending post {PostIndex}/{TotalPosts}: {PostId} (Created: {CreatedAt})", 
                 _currentPostIndex + 1, posts.Count, postToSend.PostId, postToSend.CreatedAt);
 
-            // Get the full video file ID for this post
-            var videoFileId = await _postMediaRepo.GetFullVideoTelegramFileId(postToSend.PostId, cancellationToken);
+            // Get the preferred video file ID (demo first, full as fallback)
+            var videoFileId = await _postMediaRepo.GetPreferredVideoTelegramFileId(postToSend.PostId, cancellationToken);
             
             if (string.IsNullOrWhiteSpace(videoFileId))
             {
@@ -82,6 +82,11 @@ public sealed class TelegramPostResendService : ITelegramPostResendService
                 await MoveToNextIndex();
                 return;
             }
+
+            // Check which video type we're sending
+            var demoFileId = await _postMediaRepo.GetDemoVideoTelegramFileId(postToSend.PostId, cancellationToken);
+            var videoType = (!string.IsNullOrWhiteSpace(demoFileId) && demoFileId == videoFileId) ? "DEMO" : "FULL";
+            _logger.LogInformation("Sending {VideoType} video for post {PostId}", videoType, postToSend.PostId);
 
             // Create inline button for "VIEW FULL HERE"
             var buttonUrl = GetBotDeepLink(postToSend.PostId);
